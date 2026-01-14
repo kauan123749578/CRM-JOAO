@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique // Nome de usuário para login
+  email     String?  @unique // Email opcional
+  password  String   // bcrypt hash
+  name      String
+  role      String   @default("employee") // "admin" | "employee"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chats            Chat[]             // Chats que o usuário é responsável
+  whatsappInstances WhatsAppInstance[] // Instâncias WhatsApp que o funcionário gerencia
+
+  @@map("users")
+}
+
+model WhatsAppInstance {
+  id        String   @id
+  status    String   @default("idle")
+  userId    String?  // Funcionário responsável por esta instância (null = sem responsável)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chats     Chat[]
+  messages  Message[]
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
+
+model Chat {
+  id          String   @id
+  instanceId  String
+  name        String?
+  isGroup     Boolean  @default(false)
+  unreadCount Int      @default(0)
+  lastMessage String?
+  lastTs      Int      @default(0)
+  stage       String?  @default("Entrada") // Estágio do funil: Entrada, Contatado, Negociação, Ganho, Perdido
+  tags        String[] @default([]) // Array de tags (ex: ["Lead Quente", "Negociação"])
+  userId      String?  // Usuário responsável pelo chat (null = sem responsável)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  instance WhatsAppInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  user     User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  @@index([instanceId])
+  @@index([lastTs])
+  @@index([stage])
+  @@index([userId])
+}
+
+model Message {
+  id         String   @id
+  instanceId String
+  chatId     String
+  body       String?
+  fromMe     Boolean  @default(false)
+  from       String?
+  to         String?
+  ts         Int
+  createdAt  DateTime @default(now())
+
+  instance WhatsAppInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  chat     Chat             @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([instanceId])
+  @@index([chatId, ts])
+}
+
+

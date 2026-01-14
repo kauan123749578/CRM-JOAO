@@ -1,0 +1,8 @@
+# Railway ignore - mas não ignore o build
+!.git
+!.github
+node_modules
+.wwebjs_auth
+.wwebjs_cache
+*.log
+

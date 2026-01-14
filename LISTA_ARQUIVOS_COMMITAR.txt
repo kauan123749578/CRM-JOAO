@@ -1,0 +1,101 @@
+========================================
+ARQUIVOS QUE DEVEM SER COMMITADOS
+========================================
+
+RAIZ (crm-v2/):
+✅ .gitignore
+✅ package.json
+✅ package-lock.json
+✅ nixpacks.toml
+✅ railway.json
+✅ README.md
+✅ env.example.txt
+✅ COMO_FUNCIONA.md
+✅ PERMISSOES.md
+✅ FUNIL_VENDAS.md
+✅ MELHORIAS_IMPLEMENTADAS.md
+✅ RESUMO_MELHORIAS.md
+✅ RAILWAY_DEPLOY.md
+✅ VERCEL_DEPLOY.md
+✅ CORRECOES_FINAIS.md
+✅ CORRECOES_FINAIS_COMPLETAS.md
+✅ ARQUIVOS_PARA_COMMITAR.md
+✅ INICIAR_REPOSITORIO.bat
+✅ LISTA_ARQUIVOS_COMMITAR.txt (este arquivo)
+
+TOOLS:
+✅ tools/copy-web-dist.mjs
+
+BACKEND (apps/backend/):
+✅ apps/backend/package.json
+✅ apps/backend/tsconfig.json
+✅ apps/backend/prisma/schema.prisma
+✅ apps/backend/prisma/seed.ts
+✅ apps/backend/src/ (TODOS os arquivos .ts)
+   - app.module.ts
+   - main.ts
+   - health.controller.ts
+   - auth/*.ts
+   - prisma/*.ts
+   - whatsapp/*.ts
+✅ apps/backend/public/ (IMPORTANTE - frontend compilado)
+   - index.html
+   - assets/*.js
+   - assets/*.css
+
+FRONTEND (apps/web/):
+✅ apps/web/package.json
+✅ apps/web/tsconfig.json
+✅ apps/web/vite.config.ts
+✅ apps/web/tailwind.config.js
+✅ apps/web/postcss.config.js
+✅ apps/web/index.html
+✅ apps/web/src/ (TODOS os arquivos .tsx, .ts, .css)
+   - main.tsx
+   - App.tsx
+   - api.ts
+   - styles.css
+   - components/*.tsx
+
+========================================
+ARQUIVOS QUE NÃO DEVEM SER COMMITADOS
+========================================
+
+❌ node_modules/ (qualquer lugar)
+❌ apps/backend/dist/ (build do backend)
+❌ apps/web/dist/ (build do frontend)
+❌ .env (qualquer arquivo .env)
+❌ .wwebjs_auth/ (sessão WhatsApp)
+❌ *.log (logs)
+❌ .vscode/, .idea/ (config editor)
+❌ Thumbs.db, .DS_Store (arquivos sistema)
+❌ .cache/, *.tmp, *.temp
+
+========================================
+COMANDOS PARA COMMITAR
+========================================
+
+1. Inicializar Git:
+   cd crm-v2
+   git init
+   git branch -M main
+
+2. Adicionar arquivos:
+   git add .
+
+3. Verificar o que será commitado:
+   git status
+
+4. Fazer commit:
+   git commit -m "feat: CRM WhatsApp v2 - Sistema completo"
+
+5. Conectar ao GitHub:
+   git remote add origin https://github.com/SEU-USUARIO/crm-whatsapp-v2.git
+
+6. Fazer push:
+   git push -u origin main
+
+========================================
+
+
+
