@@ -10,6 +10,11 @@ fi
 echo "🧹 Limpando arquivos antigos..."
 npm run clean || true
 
+# Limpar cache do Vite também
+echo "🧹 Limpando cache do Vite..."
+rm -rf apps/web/node_modules/.vite || true
+rm -rf apps/web/dist || true
+
 echo "📦 Construindo frontend..."
 npm run build -w @crm/web
 
@@ -28,6 +33,9 @@ echo "🚀 Versão: João Fornecedor - $(date +%Y%m%d-%H%M%S)"
 # Verificar se o frontend foi copiado
 if [ -d "apps/backend/public" ] && [ "$(ls -A apps/backend/public)" ]; then
   echo "✅ Frontend copiado com sucesso para apps/backend/public"
+  echo "📄 Conteúdo do index.html:"
+  head -10 apps/backend/public/index.html || echo "index.html não encontrado"
+  echo ""
   ls -la apps/backend/public/ | head -10
 else
   echo "❌ ERRO: Frontend não foi copiado!"
