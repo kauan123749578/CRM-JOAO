@@ -6,6 +6,7 @@ node_modules/
 # Production builds (serão gerados no build)
 apps/backend/dist/
 apps/web/dist/
+apps/backend/public/
 
 # Environment variables
 .env

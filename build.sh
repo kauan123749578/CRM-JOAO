@@ -30,6 +30,11 @@ npm run build -w @crm/backend
 echo "✅ Build completo!"
 echo "🚀 Versão: João Fornecedor - $(date +%Y%m%d-%H%M%S)"
 
+# IMPORTANTE: Re-copiar frontend DEPOIS de tudo (Railway pode sobrescrever)
+echo ""
+echo "🔄 Re-copiando frontend (proteção contra sobrescrita do Railway)..."
+node tools/copy-web-dist.mjs
+
 # Verificar se o frontend foi copiado
 if [ -d "apps/backend/public" ] && [ "$(ls -A apps/backend/public)" ]; then
   echo "✅ Frontend copiado com sucesso para apps/backend/public"
