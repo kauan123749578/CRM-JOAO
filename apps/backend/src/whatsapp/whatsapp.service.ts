@@ -580,20 +580,22 @@ export class WhatsAppService {
         }
 
         // Buscar foto de perfil do chat (contatos e grupos)
+        // Observação: para contatos individuais, a API de contato costuma estar mais atualizada
         let profilePicUrl: string | null = null;
         try {
-          // Tentar primeiro pela API direta do chat
-          profilePicUrl = await c.getProfilePicUrl().catch(() => null);
-
-          // Para contatos individuais, se não vier nada, tentar via contato
-          if (!profilePicUrl && !c?.isGroup) {
+          if (c?.isGroup) {
+            // Para grupos, usar diretamente a foto do chat
+            profilePicUrl = await c.getProfilePicUrl().catch(() => null);
+          } else {
+            // Para contatos, usar a foto do contato (igual usamos na sidebar)
             try {
-              const contact = await c.getContact();
+              const contact = await c.getContact().catch(() => null);
               if (contact) {
                 profilePicUrl = await contact.getProfilePicUrl().catch(() => null);
               }
             } catch {
-              // Ignorar erro ao buscar contato/foto
+              // Se falhar via contato, último recurso: tentar pelo chat
+              profilePicUrl = await c.getProfilePicUrl().catch(() => null);
             }
           }
         } catch {
