@@ -37,6 +37,28 @@ async function bootstrap() {
   console.log(`🚀 JOÃO FORNECEDOR operando em http://0.0.0.0:${port}`);
   // eslint-disable-next-line no-console
   console.log(`📊 DATABASE_URL: ${process.env.DATABASE_URL ? 'Configurado' : 'Não configurado'}`);
+  
+  // Verificar arquivos estáticos
+  const fs = await import('fs');
+  const path = await import('path');
+  const publicPath = path.join(__dirname, '..', 'public', 'index.html');
+  if (fs.existsSync(publicPath)) {
+    const indexContent = fs.readFileSync(publicPath, 'utf-8');
+    const hasNewTitle = indexContent.includes('JOÃO FORNECEDOR');
+    const hasOldTitle = indexContent.includes('CRM WhatsApp');
+    // eslint-disable-next-line no-console
+    console.log(`📄 index.html: ${hasNewTitle ? '✅ NOVO' : hasOldTitle ? '❌ ANTIGO' : '⚠️ DESCONHECIDO'}`);
+    if (indexContent.includes('index-D6HDW6G7.js') || indexContent.includes('index-ClilhPrd.css')) {
+      // eslint-disable-next-line no-console
+      console.log(`📦 Assets: ✅ NOVOS arquivos detectados`);
+    } else if (indexContent.includes('index-CPavSlHM.js') || indexContent.includes('index-DbqOtUVA.css')) {
+      // eslint-disable-next-line no-console
+      console.log(`📦 Assets: ❌ ANTIGOS arquivos detectados`);
+    }
+  } else {
+    // eslint-disable-next-line no-console
+    console.log(`⚠️  index.html não encontrado em: ${publicPath}`);
+  }
 }
 
 bootstrap();
