@@ -31,7 +31,7 @@ async function bootstrap() {
   );
 
   const rawPort = (process.env.PORT || '').toString().trim();
-  const port = Number.parseInt(rawPort || '8080', 10);
+  const port = Number.parseInt(rawPort || '3001', 10);
   await app.listen(port, '0.0.0.0');
   // eslint-disable-next-line no-console
   console.log(`🚀 JOÃO FORNECEDOR operando em http://0.0.0.0:${port}`);
