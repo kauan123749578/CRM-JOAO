@@ -19,9 +19,14 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
       exclude: ['/api*', '/health*', '/socket.io*'],
       serveStaticOptions: {
         setHeaders: (res, path) => {
-          // Desabilitar cache para HTML e assets
-          if (path.endsWith('.html') || path.endsWith('.js') || path.endsWith('.css')) {
-            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          // Desabilitar cache para HTML e assets - FORÇAR SEMPRE ATUALIZAÇÃO
+          if (path.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+            res.setHeader('ETag', `"${Date.now()}"`); // ETag dinâmico para forçar reload
+          } else if (path.endsWith('.js') || path.endsWith('.css')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
           }
