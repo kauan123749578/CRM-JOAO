@@ -33,9 +33,27 @@ echo "🚀 Versão: João Fornecedor - $(date +%Y%m%d-%H%M%S)"
 # Verificar se o frontend foi copiado
 if [ -d "apps/backend/public" ] && [ "$(ls -A apps/backend/public)" ]; then
   echo "✅ Frontend copiado com sucesso para apps/backend/public"
-  echo "📄 Conteúdo do index.html:"
-  head -10 apps/backend/public/index.html || echo "index.html não encontrado"
   echo ""
+  echo "📄 Verificando index.html..."
+  if [ -f "apps/backend/public/index.html" ]; then
+    echo "📋 Primeiras 12 linhas do index.html:"
+    head -12 apps/backend/public/index.html
+    echo ""
+    echo "🔍 Verificando título..."
+    if grep -q "JOÃO FORNECEDOR" apps/backend/public/index.html; then
+      echo "✅ Título correto encontrado: JOÃO FORNECEDOR"
+    elif grep -q "CRM WhatsApp" apps/backend/public/index.html; then
+      echo "⚠️  ATENÇÃO: Título antigo ainda presente!"
+      echo "🔧 Corrigindo automaticamente..."
+      sed -i 's/CRM WhatsApp v2/JOÃO FORNECEDOR - Gestão VIP/g' apps/backend/public/index.html
+      sed -i 's/CRM WhatsApp/JOÃO FORNECEDOR - Gestão VIP/g' apps/backend/public/index.html
+      echo "✅ Título corrigido!"
+    fi
+  else
+    echo "❌ index.html não encontrado!"
+  fi
+  echo ""
+  echo "📁 Arquivos em public/:"
   ls -la apps/backend/public/ | head -10
 else
   echo "❌ ERRO: Frontend não foi copiado!"
