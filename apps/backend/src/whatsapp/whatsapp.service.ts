@@ -579,11 +579,22 @@ export class WhatsAppService {
           chatName = idPart.length <= 20 ? idPart : `${idPart.substring(0, 17)}...`;
         }
 
-        // Buscar foto de perfil do chat
+        // Buscar foto de perfil do chat (contatos e grupos)
         let profilePicUrl: string | null = null;
         try {
-          if (!c?.isGroup) {
-            profilePicUrl = await c.getProfilePicUrl().catch(() => null);
+          // Tentar primeiro pela API direta do chat
+          profilePicUrl = await c.getProfilePicUrl().catch(() => null);
+
+          // Para contatos individuais, se não vier nada, tentar via contato
+          if (!profilePicUrl && !c?.isGroup) {
+            try {
+              const contact = await c.getContact();
+              if (contact) {
+                profilePicUrl = await contact.getProfilePicUrl().catch(() => null);
+              }
+            } catch {
+              // Ignorar erro ao buscar contato/foto
+            }
           }
         } catch {
           // Ignorar erro ao buscar foto
@@ -619,11 +630,11 @@ export class WhatsAppService {
         // Otimização: processar apenas os primeiros 300 chats para evitar timeout
         // (depois ainda filtra e pega só 200, mas processa menos)
         const chatsToProcess = allChats.slice(0, 300);
-        const mapped = await Promise.all(
-          chatsToProcess.map(mapChat)
-        );
+        const mapped = await Promise.all(chatsToProcess.map(mapChat));
+
+        // Agora NÃO filtramos mais grupos: incluímos contatos individuais e grupos
         return mapped
-          .filter((c: any) => !!c.id && !c.isGroup) // Filtrar grupos - apenas contatos individuais
+          .filter((c: any) => !!c.id)
           .sort((a: any, b: any) => (b.lastTs || 0) - (a.lastTs || 0))
           .slice(0, 200);
       };
@@ -828,6 +839,24 @@ export class WhatsAppService {
           } catch {
             // Ignore
           }
+
+          // Para grupos, tentar identificar o remetente (nome) para exibir na UI
+          let senderName: string | null = null;
+          try {
+            const isGroup = (chat as any)?.isGroup;
+            if (isGroup && !m.fromMe) {
+              const contact = await m.getContact().catch(() => null);
+              if (contact) {
+                senderName =
+                  contact.pushname ||
+                  contact.name ||
+                  // Alguns contatos só tem o número
+                  (contact.number || null);
+              }
+            }
+          } catch {
+            // Ignorar falhas ao obter remetente
+          }
           
           return {
             id: m.id._serialized,
@@ -837,6 +866,7 @@ export class WhatsAppService {
             from: m.from || null,
             to: m.to || null,
             ts: m.timestamp || 0,
+            senderName,
             hasMedia,
             mediaType
           };

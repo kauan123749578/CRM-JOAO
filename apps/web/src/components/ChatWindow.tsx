@@ -187,6 +187,12 @@ export default function ChatWindow({ chatName, messages, onSendMessage, isLoadin
                         <span className="text-xs text-zinc-400">Arquivo enviado</span>
                       </div>
                     )}
+                    {/* Nome do remetente em grupos (igual WhatsApp Web) */}
+                    {msg.senderName && !msg.fromMe && (
+                      <div className="text-[11px] font-semibold mb-1 text-yellow-400">
+                        {msg.senderName}
+                      </div>
+                    )}
                     <p>{msg.body || (msg.hasMedia ? '[Mídia]' : '')}</p>
                     <span
                       className={`

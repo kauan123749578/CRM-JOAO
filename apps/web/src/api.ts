@@ -16,6 +16,7 @@ export type Message = {
   body: string | null;
   fromMe: boolean;
   ts: number;
+  senderName?: string | null;
   hasMedia?: boolean;
   mediaType?: string;
 };
