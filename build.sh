@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Normalizar DATABASE_URL ANTES de tudo (Prisma precisa disso)
+if [ -z "$DATABASE_URL" ] && [ -n "$URL_DO_BANCO_DE_DADOS" ]; then
+  export DATABASE_URL="$URL_DO_BANCO_DE_DADOS"
+  echo "📝 Usando URL_DO_BANCO_DE_DADOS como DATABASE_URL"
+fi
+
 echo "🧹 Limpando arquivos antigos..."
 npm run clean || true
 
